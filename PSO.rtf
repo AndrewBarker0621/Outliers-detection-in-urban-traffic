@@ -1,0 +1,164 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset134 PingFangSC-Regular;}
+{\colortbl;\red255\green255\blue255;\red133\green85\blue4;\red240\green241\blue242;\red38\green38\blue38;
+\red66\green147\blue62;\red50\green94\blue238;}
+{\*\expandedcolortbl;;\cssrgb\c59608\c40784\c392;\cssrgb\c95294\c95686\c96078;\cssrgb\c20000\c20000\c20000;
+\cssrgb\c31373\c63137\c30980;\cssrgb\c25098\c47059\c94902;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww19920\viewh8560\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs28 \cf2 \cb3 \expnd0\expndtw0\kerning0
+c1\cf4 =\cf5 2;%
+\f1 Learning rate 1
+\f0 \cf4 \
+\cf2 c2\cf4 =\cf5 2;%
+\f1 Learning rate 2
+\f0 \cf4 \
+\cf2 Dimension\cf4 =\cf5 20;\cf4 \
+\cf2 Size\cf4 =\cf5 30;\cf4 \
+\cf2 Tmax\cf4 =\cf5 500;\cf4 \
+\cf2 Velocity_max\cf4 =\cf5 1200;%
+\f1  Max speed of particle
+\f0 \cf4 \
+\cf2 F_n\cf4 =\cf5 2;%
+\f1 Function name
+\f0 \cf4 \
+\
+\cf2 Fun_Ub\cf4 =\cf5 600;%
+\f1 Function upper and lower bounds\
+
+\f0 \cf2 Fun_Lb\cf4 =\cf5 -600;\cf4 \
+\cf2 Position\cf4 =\cf5 zeros(Dimension,Size);%
+\f1 Particle position
+\f0 \cf4 \
+\cf2 Velocity\cf4 =\cf5 zeros(Dimension,Size);%
+\f1 Particle velocity
+\f0 \cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 Vmax(1\cf4 :\cf5 Dimension)=Velocity_max;%
+\f1 Particle velocity upper and lower bounds
+\f0 \cf4 \
+\cf6 Vmin(1\cf4 :\cf5 Dimension)=-Velocity_max;\cf4 \
+\cf6 Xmax(1\cf4 :\cf5 Dimension)=Fun_Ub;%
+\f1 Upper and lower bounds on the particle position, i.e., upper and lower bounds on the independent variable of the function\
+\pard\pardeftab720\partightenfactor0
+
+\f0 \cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 Xmin(1\cf4 :\cf5 Dimension)=Fun_Lb;\cf4 \
+\cf6 [Position,Velocity]\cf4 =\cf5 Initial_position_velocity(Dimension,Size,Xmax,Xmin,Vmax,Vmin);\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 Pbest_position\cf4 =\cf5 Position;%
+\f1 Historical optimal position of the particle, the initial value is the starting position of the particle, store the historical optimal position of each particle
+\f0 \cf4 \
+\cf2 Gbest_position\cf4 =\cf5 zeros(Dimension,1);%
+\f1 The location of the globally optimal particle, the initial value is considered to be the 1st particle\
+
+\f0 \cf4 \
+\cf2 for\cf4  \cf5 j=1:Size\cf4 \
+    \cf2 Pos\cf4 =\cf5 Position(:,j);%
+\f1 Take the jth column, i.e. the position of the jth particle
+\f0 \cf4 \
+    \cf6 fz(j)\cf4 =\cf5 Fitness_Function(Pos,F_n,Dimension);%
+\f1 Calculate the adaptation value of the jth particle
+\f0 \cf4 \
+\cf2 end\cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 [Gbest_Fitness,I]\cf4 =\cf5 min(fz);%
+\f1 Find the smallest adaptation value among all adaptation values and obtain the position of the particle
+\f0 \cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf2 Gbest_position\cf4 =\cf5 Position(:,I);%
+\f1 The position of the particle that takes the minimum adaptation value, i.e. column I
+\f0 \cf4 \
+\
+\cf2 for\cf4  \cf5 itrtn=1:Tmax\cf4 \
+\pard\pardeftab720\partightenfactor0
+\cf6 time(itrtn)\cf4 =\cf5 itrtn;\cf4 \
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 Weight\cf4 =\cf5 1;\cf4 \
+\cf2 r1\cf4 =\cf5 rand(1);\cf4 \
+\cf2 r2\cf4 =\cf5 rand(1);\cf4 \
+\cf2 for\cf4  \cf5 i=1:Size\cf4 \
+   \cf6 Velocity(\cf4 :\cf5 ,i)=Weight*Velocity(:,i)+c1*r1*(Pbest_position(:,i)-Position(:,i))+c2*r2*(Gbest_position-Position(:,i));\cf4 \
+\cf2 end\cf4 \
+\cf2 %
+\f1 Limiting speed boundary
+\f0 \cf4 \
+\cf2 for\cf4  \cf5 i=1:Size\cf4 \
+    \cf2 for\cf4  \cf5 row=1:Dimension\cf4 \
+        \cf2 if\cf4  \cf5 Velocity(row,i)>Vmax(row)\cf4 \
+            \cf6 Veloctity(row,i)\cf4 =\cf5 Vmax(row);\cf4 \
+        \cf2 elseif\cf4  \cf5 Velocity(row,i)<Vmin(row)\cf4 \
+            \cf6 Veloctity(row,i)\cf4 =\cf5 Vmin(row);\cf4 \
+        \cf2 else\cf4 \
+        \cf2 end\cf4 \
+    \cf2 end\cf4 \
+\cf2 end\cf4 \
+\
+\cf2 Position\cf4 =\cf5 Position+Velocity;\cf4 \
+\
+\cf2 %
+\f1 Restricted position boundary
+\f0 \cf4 \
+\cf2 for\cf4  \cf5 i=1:Size\cf4 \
+    \cf2 for\cf4  \cf5 row=1:Dimension\cf4 \
+        \cf2 if\cf4  \cf5 Position(row,i)>Xmax(row)\cf4 \
+            \cf6 Position(row,i)\cf4 =\cf5 Xmax(row);\cf4 \
+        \cf2 elseif\cf4  \cf5 Position(row,i)<Xmin(row)\cf4 \
+            \cf6 Position(row,i)\cf4 =\cf5 Xmin(row);\cf4 \
+        \cf2 else\cf4 \
+        \cf2 end\cf4 \
+    \cf2 end\cf4 \
+\cf2 end\cf4 \
+\
+  \cf2 for\cf4  \cf5 j=1:Size\cf4 \
+     \cf2 P_position\cf4 =\cf5 Position(:,j)';%
+\f1 Take the position of a particle
+\f0 \cf4 \
+     \cf6 fitness_p(j)\cf4 =\cf5 Fitness_Function(P_position,F_n,Dimension);\cf4 \
+     \cf2 if\cf4  \cf5 fitness_p(j)< fz(j) %
+\f1 The adaptation value of the particle is better than the adaptation value before the motion, updating the original adaptation value
+\f0 \cf4 \
+         \cf6 Pbest_position(\cf4 :\cf5 ,j)=Position(:,j);\cf4 \
+         \cf6 fz(j)\cf4 =\cf5 fitness_p(j);\cf4 \
+     \cf2 end\cf4 \
+     \cf2 if\cf4  \cf5 fitness_p(j)<Gbest_Fitness\cf4 \
+         \cf2 Gbest_Fitness\cf4 =\cf5 fitness_p(j);\cf4 \
+     \cf2 end\cf4 \
+  \cf2 end\cf4 \
+  \cf6 [Gbest_Fitness_new,I]\cf4 =\cf5 min(fz);%
+\f1 After updating the adaptation value of all particles, take the smallest one and find its number
+\f0 \cf4 \
+   \cf6 Best_fitness(itrtn)\cf4 =\cf5 Gbest_Fitness_new; %
+\f1 Record the best adaptation value for each generation
+\f0 \cf4 \
+   \cf2 Gbest_position\cf4 =\cf5 Pbest_position(:,I);%
+\f1 Location of the individual corresponding to the best adaptation value
+\f0 \cf4 \
+\cf2 end\cf4 \
+\cf2 plot(time,Best_fitness);\cf4 \
+\cf2 xlabel('
+\f1 Number of iterations
+\f0 ');ylabel('
+\f1 Adaptability value P_g
+\f0 ');\
+\
+\
+function\cf4  \cf5 Fitness=Fitness_Function(Pos,F_n,Dimension)\cf4 \
+ \cf2 switch\cf4  \cf5 F_n\cf4 \
+    \cf2 case\cf4  \cf5 1\cf4 \
+        \cf2 Func_Sphere\cf4 =\cf5 Pos(:)'*Pos(:);\cf4 \
+        \cf2 Fitness\cf4 =\cf5 Func_Sphere;\cf4 \
+    \cf2 case\cf4  \cf5 2\cf4 \
+        \cf2 res1\cf4 =\cf5 Pos(:)'*Pos(:)/4000;\cf4 \
+        \cf2 res2\cf4 =\cf5 1;\cf4 \
+        \cf2 for\cf4  \cf5 row=1:Dimension\cf4 \
+            \cf2 res2\cf4 =\cf5 res2*cos(Pos(row)/sqrt(row));\cf4 \
+        \cf2 end\cf4 \
+        \cf2 Func_Griewank\cf4 =\cf5 res1-res2+1;\cf4 \
+        \cf2 Fitness\cf4 =\cf5 Func_Griewank;\cf4 \
+\cf2 end}
